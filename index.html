@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nodes of You | ZK Identity Verifier</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script src="i18n.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <!-- Language Selector & Crypto Education Header -->
+        <div class="app-header">
+            <div class="header-left">
+                <button id="crypto-edu-btn" class="crypto-btn" data-i18n="cryptoEducationBtn">What is Crypto?</button>
+            </div>
+            <div class="header-right">
+                <label for="language-select" data-i18n="languageLabel">Language</label>
+                <select id="language-select" class="language-selector">
+                    <option value="en">English</option>
+                    <option value="fr">Français</option>
+                    <option value="ar">العربية</option>
+                    <option value="sw">Kiswahili</option>
+                    <option value="ha">Hausa</option>
+                    <option value="am">አማርኛ</option>
+                    <option value="yo">Yorùbá</option>
+                    <option value="ig">Igbo</option>
+                    <option value="zu">isiZulu</option>
+                    <option value="pt">Português</option>
+                </select>
+            </div>
+        </div>
+        <!-- Main Form Card -->
+        <div class="card" id="form-card">
+            <h1 data-i18n="appTitle">Nodes of You</h1>
+            <p class="subtitle main-tagline">Africa's blockchain voices, rewarded. Don't just share your
+                story—<strong>monetize it</strong>.</p>
+            <p class="subtitle sub-tagline">Share. Earn. Own.</p>
+            <p class="subtitle cta-tagline">Ready to get paid for your crypto story? <strong>Instant Aleo credits + up
+                    to 5% YouTube earnings, forever.</strong></p>
+
+            <!-- Reward Structure Visual -->
+            <div class="reward-structure">
+                <div class="reward-tier">
+                    <div class="reward-icon">📱</div>
+                    <div class="reward-details">
+                        <div class="reward-action">WhatsApp Share</div>
+                        <div class="reward-arrow">→</div>
+                        <div class="reward-benefit">⚡ Instant Aleo Credits</div>
+                    </div>
+                </div>
+                <div class="reward-tier featured">
+                    <div class="reward-icon">🎙️</div>
+                    <div class="reward-details">
+                        <div class="reward-action">YouTube Feature</div>
+                        <div class="reward-arrow">→</div>
+                        <div class="reward-benefit">💰 0.5-5% Monthly Revenue (Lifetime)</div>
+                    </div>
+                </div>
+            </div>
+
+            <form id="identity-form">
+                <div class="form-group">
+                    <label>WhatsApp Contact (Required for Lead)</label>
+                    <input type="tel" id="whatsapp" placeholder="e.g. +234..." required>
+                </div>
+
+                <div class="form-group">
+                    <label>Nickname / Identifier (Optional)</label>
+                    <input type="text" id="nickname" placeholder="e.g. Satoshi_N0de">
+                </div>
+
+                <div class="form-group" style="position: relative;">
+                    <div id="validation-indicator" class="validation-badge">Level 0: Self-Reported</div>
+                    <label>Age (Verified by ID)</label>
+                    <input type="number" id="age" placeholder="e.g. 28" min="18" max="100">
+                    <div class="file-input-wrapper">
+                        <label class="file-label" for="id-card">Upload Govt ID (JPEG)</label>
+                        <input type="file" id="id-card" accept="image/jpeg,image/png">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Location (Verified by IP)</label>
+                    <select id="location" required>
+                        <option value="">Select Country</option>
+                        <option value="Algeria">Algeria</option>
+                        <option value="Angola">Angola</option>
+                        <option value="Benin">Benin</option>
+                        <option value="Botswana">Botswana</option>
+                        <option value="Burkina Faso">Burkina Faso</option>
+                        <option value="Burundi">Burundi</option>
+                        <option value="Cabo Verde">Cabo Verde</option>
+                        <option value="Cameroon">Cameroon</option>
+                        <option value="Central African Republic">Central African Republic</option>
+                        <option value="Chad">Chad</option>
+                        <option value="Comoros">Comoros</option>
+                        <option value="Congo">Congo (Brazzaville)</option>
+                        <option value="Cote d'Ivoire">Cote d'Ivoire</option>
+                        <option value="DRC">Democratic Republic of the Congo</option>
+                        <option value="Djibouti">Djibouti</option>
+                        <option value="Egypt">Egypt</option>
+                        <option value="Equatorial Guinea">Equatorial Guinea</option>
+                        <option value="Eritrea">Eritrea</option>
+                        <option value="Eswatini">Eswatini</option>
+                        <option value="Ethiopia">Ethiopia</option>
+                        <option value="Gabon">Gabon</option>
+                        <option value="Gambia">Gambia</option>
+                        <option value="Ghana">Ghana</option>
+                        <option value="Guinea">Guinea</option>
+                        <option value="Guinea-Bissau">Guinea-Bissau</option>
+                        <option value="Kenya">Kenya</option>
+                        <option value="Lesotho">Lesotho</option>
+                        <option value="Liberia">Liberia</option>
+                        <option value="Libya">Libya</option>
+                        <option value="Madagascar">Madagascar</option>
+                        <option value="Malawi">Malawi</option>
+                        <option value="Mali">Mali</option>
+                        <option value="Mauritania">Mauritania</option>
+                        <option value="Mauritius">Mauritius</option>
+                        <option value="Morocco">Morocco</option>
+                        <option value="Mozambique">Mozambique</option>
+                        <option value="Namibia">Namibia</option>
+                        <option value="Niger">Niger</option>
+                        <option value="Nigeria">Nigeria</option>
+                        <option value="Rwanda">Rwanda</option>
+                        <option value="Sao Tome and Principe">Sao Tome and Principe</option>
+                        <option value="Senegal">Senegal</option>
+                        <option value="Seychelles">Seychelles</option>
+                        <option value="Sierra Leone">Sierra Leone</option>
+                        <option value="Somalia">Somalia</option>
+                        <option value="South Africa">South Africa</option>
+                        <option value="South Sudan">South Sudan</option>
+                        <option value="Sudan">Sudan</option>
+                        <option value="Tanzania">Tanzania</option>
+                        <option value="Togo">Togo</option>
+                        <option value="Tunisia">Tunisia</option>
+                        <option value="Uganda">Uganda</option>
+                        <option value="Zambia">Zambia</option>
+                        <option value="Zimbabwe">Zimbabwe</option>
+                    </select>
+                    <div class="form-group">
+                        <label>Africa Region</label>
+                        <select id="region" required>
+                            <option value="">Select Region</option>
+                            <option value="East">East Africa</option>
+                            <option value="West">West Africa</option>
+                            <option value="North">North Africa</option>
+                            <option value="South">South Africa</option>
+                            <option value="Islands">African Islands</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Age Bracket</label>
+                        <select id="age-bracket" required>
+                            <option value="">Select Bracket</option>
+                            <option value="18-25">18 - 25</option>
+                            <option value="26-35">26 - 35</option>
+                            <option value="36-50">36 - 50</option>
+                            <option value="51+">51+</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Gender (Optional)</label>
+                        <select id="gender">
+                            <option value="">Select Gender</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                            <option value="Prefer not to say">Prefer not to say</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Wallet & Holdings Proof</label>
+                        <button type="button" id="connect-wallet" class="secondary-btn">Connect Wallet</button>
+                        <div class="file-input-wrapper" style="margin-top: 5px;">
+                            <label class="file-label" for="wallet-screenshot">Upload Balance Screenshot</label>
+                            <input type="file" id="wallet-screenshot" accept="image/jpeg,image/png">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Node Operator Proof (Optional)</label>
+                        <input type="text" id="node-id" placeholder="Enter Aleo Node ID (e.g. aleo1...)">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Crypto Holdings (USD)</label>
+                        <input type="number" id="holdings" placeholder="Verified by Wallet Connection">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Year Introduced to Crypto</label>
+                        <input type="number" id="year" placeholder="e.g. 2018" min="2009" max="2025">
+                    </div>
+
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="defi">
+                        <label for="defi">Active DeFi User</label>
+                    </div>
+
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="validator">
+                        <label for="validator">Network Validator / Node Op</label>
+                    </div>
+
+                    <!-- TIER 3: INTERVIEW WAITLIST CALLOUT -->
+                    <div class="waitlist-callout tier-3">
+                        <div class="callout-header">
+                            <span class="callout-icon">🎙️</span>
+                            <h4>Join the Interview Waitlist!</h4>
+                        </div>
+                        <p>Complete <strong>ID upload + Wallet connection</strong> above to qualify for our YouTube
+                            podcast.</p>
+                        <ul class="benefits-list">
+                            <li>✅ Share your blockchain story on camera</li>
+                            <li>✅ Earn <strong>0.5-2% lifetime YouTube revenue</strong></li>
+                            <li>✅ Help shape African crypto research</li>
+                        </ul>
+                        <p class="callout-note">💡 We'll contact you via WhatsApp for scheduling (20-25 min interview)
+                        </p>
+                    </div>
+
+                    <!-- TIER 4: PRIORITY WAITLIST CALLOUT -->
+                    <div class="waitlist-callout tier-4">
+                        <div class="callout-header">
+                            <span class="callout-icon">💎</span>
+                            <h4>Priority Interview Access</h4>
+                        </div>
+                        <p>Complete the advanced fields above (Nickname, Crypto details, Node status) for:</p>
+                        <ul class="benefits-list">
+                            <li>⭐ <strong>Priority selection</strong> over standard waitlist</li>
+                            <li>💰 <strong>Higher revenue share: 3-5%</strong> (vs 0.5-2%)</li>
+                            <li>🎯 Richer conversation & better insights</li>
+                        </ul>
+                    </div>
+
+                    <!-- INTERVIEW CONSENT -->
+                    <div class="checkbox-group consent-checkbox">
+                        <input type="checkbox" id="interview-consent">
+                        <label for="interview-consent">I agree to be interviewed and recorded for YouTube if selected
+                            from the waitlist. I understand my data may be anonymized and used for research.</label>
+                    </div>
+
+                    <button type="submit" id="submit-btn" style="margin-top: 2rem;">Generate ZK Proof</button>
+            </form>
+
+            <div id="overlay">
+                <div class="loader"></div>
+                <h3 style="margin-bottom: 0.5rem; font-weight: 700;">Lifting Off...</h3>
+                <p id="status-text">Shielding Private Attributes...</p>
+            </div>
+        </div>
+
+        <!-- Result Card -->
+        <div class="card" id="result-card" style="display: none;">
+            <div id="tier-container"></div>
+            <h1>Nodes of You</h1>
+            <p class="subtitle">Verified Guest Status | Lifting Off to the Moon</p>
+
+            <div id="result-details">
+                <!-- Details injected by JS -->
+            </div>
+
+            <p
+                style="font-size: 0.75rem; color: var(--text-dim); margin-top: 2rem; text-align: center; font-family: monospace; letter-spacing: 0.5px;">
+                ZK-PROOF-HASH: 0x8a41cada3b91c...
+            </p>
+
+            <button onclick="window.location.reload()"
+                style="background: rgba(255,255,255,0.1); color: white; border: 1px solid var(--glass-border); margin-top: 2rem;">New
+                Session</button>
+        </div>
+    </div>
+
+    <!-- Crypto Education Modal -->
+    <div id="crypto-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 data-i18n="cryptoModalTitle">What is Crypto?</h2>
+                <button class="modal-close" id="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p class="crypto-intro" data-i18n="cryptoIntro">
+                    Cryptocurrency is digital money that works on the internet. Unlike regular money controlled by banks
+                    and governments, crypto is decentralized—meaning no single person or institution controls it.
+                </p>
+
+                <div class="crypto-keys">
+                    <div class="crypto-key-item">
+                        <h3>🔑 <span data-i18n="cryptoKey1">Digital Wallets</span></h3>
+                        <p data-i18n="cryptoKey1Desc">Store your crypto in a digital wallet, like a bank account on your
+                            phone.</p>
+                    </div>
+                    <div class="crypto-key-item">
+                        <h3>⛓️ <span data-i18n="cryptoKey2">Blockchain</span></h3>
+                        <p data-i18n="cryptoKey2Desc">A public ledger that records all transactions securely and
+                            transparently.</p>
+                    </div>
+                    <div class="crypto-key-item">
+                        <h3>🔐 <span data-i18n="cryptoKey3">Zero-Knowledge Proofs</span></h3>
+                        <p data-i18n="cryptoKey3Desc">Prove things about yourself (like your age or location) without
+                            revealing your personal data.</p>
+                    </div>
+                </div>
+
+                <div class="learning-resources">
+                    <h3 data-i18n="cryptoLearnMore">Want to learn more?</h3>
+                    <div class="resource-buttons">
+                        <a href="https://www.coinbase.com/learn/crypto-basics" target="_blank"
+                            class="resource-btn beginner" data-i18n="cryptoLevelBeginner">Beginner</a>
+                        <a href="https://ethereum.org/en/learn/" target="_blank" class="resource-btn intermediate"
+                            data-i18n="cryptoLevelIntermediate">Intermediate</a>
+                        <a href="https://aleo.org/learn" target="_blank" class="resource-btn pro"
+                            data-i18n="cryptoLevelPro">Pro</a>
+                    </div>
+                </div>
+                <button class="modal-close-btn" id="close-modal-btn" data-i18n="cryptoClose">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
