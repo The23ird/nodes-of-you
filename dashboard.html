@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nodes of You | Analytics Console</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Raleway:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="dashboard.css">
+</head>
+
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <h2>Nodes<br>of You</h2>
+            </div>
+            <nav>
+                <a href="#" class="active">Overview</a>
+                <a href="#">Nodes</a>
+                <a href="#">Wallet</a>
+                <a href="index.html">Main Site ↗</a>
+            </nav>
+            <div class="status-indicator">
+                <span class="dot"></span> System Online
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header>
+                <h1>Network Intelligence</h1>
+                <p>Real-time data from the ZK-Identity Layer</p>
+            </header>
+
+            <!-- KPI Cards -->
+            <div class="kpi-grid">
+                <div class="card kpi">
+                    <h3>Total Nodes</h3>
+                    <div class="value" id="kpi-users">Loading...</div>
+                    <div class="sub">Verified Identities</div>
+                </div>
+                <div class="card kpi">
+                    <h3>Total Economic Value</h3>
+                    <div class="value" id="kpi-revenue">Loading...</div>
+                    <div class="sub">USD (Across Network)</div>
+                </div>
+                <div class="card kpi highlight-red">
+                    <h3>Liquidity Need</h3>
+                    <div class="value" id="kpi-pending">Loading...</div>
+                    <div class="sub">Pending Payouts</div>
+                </div>
+            </div>
+
+            <!-- Charts Row 1 -->
+            <div class="charts-grid">
+                <div class="card chart-card">
+                    <h3>Geographic Distribution</h3>
+                    <canvas id="geoChart"></canvas>
+                </div>
+                <div class="card chart-card">
+                    <h3>User Tiers</h3>
+                    <canvas id="tierChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Ledger Table -->
+            <div class="card table-card">
+                <h3>Recent Ledger Activity</h3>
+                <div class="table-responsive">
+                    <table id="ledger-table">
+                        <thead>
+                            <tr>
+                                <th>Transaction ID</th>
+                                <th>Source</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- JS will inject here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Data Fetching & Rendering
+        async function initDashboard() {
+            try {
+                const response = await fetch('dashboard_data.json');
+                const data = await response.json();
+                render(data);
+            } catch (e) {
+                console.error("Error loading data:", e);
+                document.querySelector('h1').innerText = "Error: Run export_json.py first!";
+            }
+        }
+
+        function render(data) {
+            // 1. KPIs
+            const totalNodes = data.nodes.length;
+            const totalRev = data.ledger.reduce((sum, item) => sum + item.amount, 0);
+            const pending = data.ledger.filter(i => i.status === 'Pending').reduce((sum, item) => sum + item.amount, 0);
+
+            document.getElementById('kpi-users').innerText = totalNodes.toLocaleString();
+            document.getElementById('kpi-revenue').innerText = '$' + totalRev.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            document.getElementById('kpi-pending').innerText = '$' + pending.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+            // 2. Charts - Geo
+            const countries = {};
+            data.profiles.forEach(p => {
+                countries[p.country] = (countries[p.country] || 0) + 1;
+            });
+
+            const ctxGeo = document.getElementById('geoChart').getContext('2d');
+            new Chart(ctxGeo, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(countries),
+                    datasets: [{
+                        label: 'Active Nodes',
+                        data: Object.values(countries),
+                        backgroundColor: '#00BFFF',
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: '#9FA8DA' } },
+                        x: { grid: { display: false }, ticks: { color: '#9FA8DA' } }
+                    }
+                }
+            });
+
+            // 3. Charts - Tiers
+            const tiers = { 1: 0, 2: 0, 3: 0, 4: 0 };
+            data.nodes.forEach(n => tiers[n.tier]++);
+
+            const ctxTier = document.getElementById('tierChart').getContext('2d');
+            new Chart(ctxTier, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Tier 1 (Basic)', 'Tier 2 (Verified)', 'Tier 3 (Interview)', 'Tier 4 (Priority)'],
+                    datasets: [{
+                        data: Object.values(tiers),
+                        backgroundColor: ['#4C566A', '#D8DEE9', '#00BFFF', '#FFD700'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { position: 'bottom', labels: { color: '#ECEFF4' } } }
+                }
+            });
+
+            // 4. Ledger Table (Last 10)
+            const tbody = document.querySelector('#ledger-table tbody');
+            // Mocking simpler Tx IDs for display
+            const recent = data.ledger.slice(0, 10);
+            recent.forEach((tx, i) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td style="font-family: 'JetBrains Mono'">TX-${1000 + i}</td>
+                    <td>${tx.source}</td>
+                    <td>$${tx.amount.toFixed(2)}</td>
+                    <td><span class="status-badge ${tx.status.toLowerCase()}">${tx.status}</span></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        initDashboard();
+    </script>
+</body>
+
+</html>

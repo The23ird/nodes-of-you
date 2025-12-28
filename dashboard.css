@@ -1,0 +1,222 @@
+:root {
+    --bg-color: #0B0E14;
+    --card-bg: rgba(30, 34, 42, 0.6);
+    --sidebar-bg: rgba(11, 14, 20, 0.95);
+    --sky-blue: #00BFFF;
+    --moon-grey: #D8DEE9;
+    --text-main: #ECEFF4;
+    --text-dim: #9FA8DA;
+    --gold: #FFD700;
+    --danger: #FF6B6B;
+    --success: #A3BE8C;
+    --glass-border: rgba(255, 255, 255, 0.08);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    font-family: 'Raleway', sans-serif;
+    display: flex;
+    min-height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 250px;
+    background: var(--sidebar-bg);
+    border-right: 1px solid var(--glass-border);
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.logo h2 {
+    font-family: 'Playfair Display', serif;
+    background: linear-gradient(135deg, var(--sky-blue), var(--moon-grey));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 1.8rem;
+    margin-bottom: 3rem;
+}
+
+.sidebar nav a {
+    display: block;
+    color: var(--text-dim);
+    text-decoration: none;
+    padding: 1rem 0;
+    font-size: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+    transition: 0.3s;
+}
+
+.sidebar nav a:hover,
+.sidebar nav a.active {
+    color: var(--sky-blue);
+    padding-left: 10px;
+}
+
+.status-indicator {
+    margin-top: auto;
+    font-size: 0.8rem;
+    color: var(--success);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.dot {
+    width: 8px;
+    height: 8px;
+    background: var(--success);
+    border-radius: 50%;
+    box-shadow: 0 0 10px var(--success);
+}
+
+/* Main Content */
+.main-content {
+    flex: 1;
+    padding: 3rem;
+    overflow-y: auto;
+}
+
+header {
+    margin-bottom: 3rem;
+}
+
+header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+}
+
+header p {
+    color: var(--text-dim);
+    margin-top: 0.5rem;
+}
+
+/* Cards */
+.card {
+    background: var(--card-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    padding: 1.5rem;
+    backdrop-filter: blur(10px);
+}
+
+/* KPI Grid */
+.kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.kpi h3 {
+    font-size: 0.9rem;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.kpi .value {
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0.5rem 0;
+    color: var(--text-main);
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.kpi .sub {
+    font-size: 0.8rem;
+    color: var(--moon-grey);
+    opacity: 0.7;
+}
+
+.kpi.highlight-red .value {
+    color: var(--danger);
+}
+
+/* Charts */
+.charts-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.chart-card h3 {
+    margin-bottom: 1rem;
+    font-family: 'Playfair Display', serif;
+}
+
+/* Table */
+.table-card h3 {
+    margin-bottom: 1.5rem;
+    font-family: 'Playfair Display', serif;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th {
+    text-align: left;
+    color: var(--text-dim);
+    padding-bottom: 1rem;
+    font-size: 0.9rem;
+}
+
+td {
+    padding: 1rem 0;
+    border-top: 1px solid var(--glass-border);
+    color: var(--text-main);
+    font-size: 0.95rem;
+}
+
+.status-badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.status-badge.paid {
+    background: rgba(163, 190, 140, 0.2);
+    color: var(--success);
+}
+
+.status-badge.pending {
+    background: rgba(255, 107, 107, 0.2);
+    color: var(--danger);
+}
+
+.status-badge.staked {
+    background: rgba(0, 191, 255, 0.2);
+    color: var(--sky-blue);
+}
+
+@media (max-width: 900px) {
+    .charts-grid {
+        grid-template-columns: 1fr;
+    }
+
+    body {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        height: auto;
+        padding: 1rem;
+        border-right: none;
+        border-bottom: 1px solid var(--glass-border);
+    }
+}
