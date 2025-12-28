@@ -20,7 +20,7 @@
 body {
     background-color: var(--bg-color);
     color: var(--text-main);
-    font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: 'Raleway', -apple-system, BlinkMacSystemFont, sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -60,8 +60,11 @@ body {
 }
 
 h1 {
-    font-size: 2rem;
+    font-size: 2.5rem;
+    /* Increased slightly for the serif header */
     margin-bottom: 0.6rem;
+    font-family: 'Playfair Display', serif;
+    /* Serif Heading */
     background: var(--accent-gradient);
     -webkit-background-clip: text;
     background-clip: text;
@@ -267,7 +270,7 @@ input[type="file"] {
 #status-text {
     font-size: 1rem;
     color: var(--sky-blue);
-    font-family: 'Outfit', sans-serif;
+    font-family: 'Raleway', sans-serif;
     letter-spacing: 0.5px;
     font-weight: 500;
 }
@@ -346,6 +349,7 @@ input[type="file"] {
     color: var(--moon-grey);
     border-bottom-color: var(--moon-grey);
 }
+
 /* Language Selector & Crypto Education Header */
 .app-header {
     display: flex;
@@ -439,8 +443,13 @@ input[type="file"] {
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
 }
 
 .modal-content {
@@ -457,8 +466,15 @@ input[type="file"] {
 }
 
 @keyframes slideUp {
-    from { transform: translateY(50px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
+    from {
+        transform: translateY(50px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
 }
 
 .modal-header {
@@ -614,18 +630,45 @@ input[type="file"] {
 }
 
 /* RTL Support for Arabic */
-[dir="rtl"] .app-header { flex-direction: row-reverse; }
-[dir="rtl"] .header-right { flex-direction: row-reverse; }
-[dir="rtl"] .modal-header { flex-direction: row-reverse; }
-[dir="rtl"] .resource-buttons { flex-direction: row-reverse; }
+[dir="rtl"] .app-header {
+    flex-direction: row-reverse;
+}
+
+[dir="rtl"] .header-right {
+    flex-direction: row-reverse;
+}
+
+[dir="rtl"] .modal-header {
+    flex-direction: row-reverse;
+}
+
+[dir="rtl"] .resource-buttons {
+    flex-direction: row-reverse;
+}
 
 /* Responsive Design */
 @media (max-width: 600px) {
-    .app-header { flex-direction: column; align-items: stretch; }
-    .header-left, .header-right { width: 100%; }
-    .header-right { justify-content: space-between; }
-    .resource-buttons { flex-direction: column; }
-    .resource-btn { width: 100%; }
+    .app-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .header-left,
+    .header-right {
+        width: 100%;
+    }
+
+    .header-right {
+        justify-content: space-between;
+    }
+
+    .resource-buttons {
+        flex-direction: column;
+    }
+
+    .resource-btn {
+        width: 100%;
+    }
 }
 
 /* Marketing Taglines */
@@ -743,11 +786,11 @@ input[type="file"] {
         align-items: flex-start;
         gap: 0.4rem;
     }
-    
+
     .reward-arrow {
         display: none;
     }
-    
+
     .reward-benefit {
         margin-left: 0;
     }
