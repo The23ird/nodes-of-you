@@ -52,11 +52,25 @@ with open(SQL_FILE, "w") as f:
         region = rnd_item(REGIONS[country])
         age_bracket = rnd_item(["18-25", "26-35", "36-50", "51+"])
         crypto_exp = random.randint(2015, 2024)
-        is_candidate = random.random() < 0.15 # 15% interview candidates
-        # Mock encrypted string
+        is_candidate = random.random() < 0.15 
+        
+        # NEW: Richer Financials & Participation
+        # Holdings: Power law distribution (most have little, few have a lot)
+        holdings = int(random.expovariate(1/5000)) + 50 # Base $50
+        
+        # Staking: 30% of users stake. Stakers usually have more holdings.
+        is_staker = random.random() < 0.3
+        staking_bal = int(holdings * random.uniform(0.2, 0.8)) if is_staker else 0
+        
+        # Node Ops: Rare (5%), generally high holdings
+        is_validator = random.random() < 0.05
+        if is_validator: 
+            holdings += random.randint(10000, 50000)
+            staking_bal += random.randint(5000, 20000)
+
         wa_hash = "enc_" + "".join(random.choices("0123456789abcdef", k=32))
         
-        f.write(f"INSERT INTO encrypted_profiles (id, whatsapp_hash, country, region, age_bracket, crypto_experience_year, is_interview_candidate) VALUES ('{uid}', '{wa_hash}', '{country}', '{region}', '{age_bracket}', {crypto_exp}, {'TRUE' if is_candidate else 'FALSE'});\n")
+        f.write(f"INSERT INTO encrypted_profiles (id, whatsapp_hash, country, region, age_bracket, crypto_experience_year, is_interview_candidate, estimated_holdings_usd, staking_balance_usd, is_validator) VALUES ('{uid}', '{wa_hash}', '{country}', '{region}', '{age_bracket}', {crypto_exp}, {'TRUE' if is_candidate else 'FALSE'}, {holdings}, {staking_bal}, {'TRUE' if is_validator else 'FALSE'});\n")
 
     f.write("\n\n-- 3. REVENUE_LEDGER\n")
     # 3. LEDGER

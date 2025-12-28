@@ -4,93 +4,97 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nodes of You | Analytics Console</title>
+    <title>Nodes of You | Intelligence Console</title>
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
         href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Raleway:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap"
         rel="stylesheet">
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Leaflet (Map) -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <link rel="stylesheet" href="dashboard.css">
 </head>
 
 <body>
     <div class="dashboard-container">
-        <!-- Sidebar -->
+        <!-- Sidebar and Layout same as before -->
         <aside class="sidebar">
             <div class="logo">
                 <h2>Nodes<br>of You</h2>
             </div>
             <nav>
-                <a href="#" class="active">Overview</a>
-                <a href="#">Nodes</a>
-                <a href="#">Wallet</a>
+                <a href="#" class="active">Intelligence</a>
+                <a href="#">Network Map</a>
+                <a href="#">Stakenet</a>
                 <a href="index.html">Main Site ↗</a>
             </nav>
-            <div class="status-indicator">
-                <span class="dot"></span> System Online
-            </div>
+            <div class="status-indicator"><span class="dot"></span> Live Data Feed</div>
         </aside>
 
         <!-- Main Content -->
         <main class="main-content">
             <header>
-                <h1>Network Intelligence</h1>
-                <p>Real-time data from the ZK-Identity Layer</p>
+                <h1>African Web3 Intelligence</h1>
+                <p>Real-time capital spread, demographics, and participation metrics.</p>
             </header>
 
             <!-- KPI Cards -->
             <div class="kpi-grid">
                 <div class="card kpi">
-                    <h3>Total Nodes</h3>
-                    <div class="value" id="kpi-users">Loading...</div>
-                    <div class="sub">Verified Identities</div>
+                    <h3>Total Capital (Tracked)</h3>
+                    <div class="value" id="kpi-holdings">Loading...</div>
+                    <div class="sub">Estimated User Holdings</div>
                 </div>
                 <div class="card kpi">
-                    <h3>Total Economic Value</h3>
-                    <div class="value" id="kpi-revenue">Loading...</div>
-                    <div class="sub">USD (Across Network)</div>
+                    <h3>Staked Value</h3>
+                    <div class="value" id="kpi-staked">Loading...</div>
+                    <div class="sub">Active in Consensus</div>
+                </div>
+                <div class="card kpi">
+                    <h3>Avg. Portfolio</h3>
+                    <div class="value" id="kpi-avg">Loading...</div>
+                    <div class="sub">Per User</div>
                 </div>
                 <div class="card kpi highlight-red">
-                    <h3>Liquidity Need</h3>
-                    <div class="value" id="kpi-pending">Loading...</div>
-                    <div class="sub">Pending Payouts</div>
+                    <h3>Validators</h3>
+                    <div class="value" id="kpi-validators">Loading...</div>
+                    <div class="sub">Running Nodes</div>
                 </div>
             </div>
 
-            <!-- Charts Row 1 -->
+            <!-- ROW 1: MAP & PARTICIPATION -->
+            <div class="charts-grid-full">
+                <div class="card chart-card">
+                    <h3>Capital Spread (Geospatial)</h3>
+                    <div id="mapChart"></div>
+                </div>
+                <div class="card chart-card">
+                    <h3>Network Participation</h3>
+                    <canvas id="participationChart"></canvas>
+                </div>
+            </div>
+
+            <!-- ROW 2: DEMOGRAPHICS & MATURITY -->
             <div class="charts-grid">
                 <div class="card chart-card">
-                    <h3>Geographic Distribution</h3>
-                    <canvas id="geoChart"></canvas>
+                    <h3>Capital vs. Age Bracket</h3>
+                    <canvas id="demographicChart"></canvas>
                 </div>
                 <div class="card chart-card">
-                    <h3>User Tiers</h3>
-                    <canvas id="tierChart"></canvas>
+                    <h3>Maturity Curve (Year Joined vs Capital)</h3>
+                    <canvas id="maturityChart"></canvas>
                 </div>
             </div>
 
-            <!-- Ledger Table -->
-            <div class="card table-card">
-                <h3>Recent Ledger Activity</h3>
-                <div class="table-responsive">
-                    <table id="ledger-table">
-                        <thead>
-                            <tr>
-                                <th>Transaction ID</th>
-                                <th>Source</th>
-                                <th>Amount</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <!-- JS will inject here -->
-                        </tbody>
-                    </table>
-                </div>
+            <!-- ROW 3: REGIONAL BREAKDOWN -->
+            <div class="card chart-card" style="margin-bottom: 2rem;">
+                <h3>Capital Concentration by Region (Province)</h3>
+                <canvas id="regionChart" height="80"></canvas>
             </div>
+
         </main>
     </div>
 
@@ -100,85 +104,165 @@
             try {
                 const response = await fetch('dashboard_data.json');
                 const data = await response.json();
+
+                // Fetch GeoJSON for Africa (Simple version)
+                // Using a reliable CDN for Africa GeoJSON or just markers for now to avoid CORS/Size issues.
+                // We will use Markers + Circles for density to be safe and accurate with "Provinces".
                 render(data);
             } catch (e) {
                 console.error("Error loading data:", e);
-                document.querySelector('h1').innerText = "Error: Run export_json.py first!";
             }
         }
 
         function render(data) {
             // 1. KPIs
-            const totalNodes = data.nodes.length;
-            const totalRev = data.ledger.reduce((sum, item) => sum + item.amount, 0);
-            const pending = data.ledger.filter(i => i.status === 'Pending').reduce((sum, item) => sum + item.amount, 0);
+            const totalHoldings = data.profiles.reduce((sum, p) => sum + (p.holdings || 0), 0);
+            const totalStaked = data.profiles.reduce((sum, p) => sum + (p.staked || 0), 0);
+            const validators = data.profiles.filter(p => p.is_validator).length;
+            const avgHoldings = totalHoldings / data.profiles.length;
 
-            document.getElementById('kpi-users').innerText = totalNodes.toLocaleString();
-            document.getElementById('kpi-revenue').innerText = '$' + totalRev.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-            document.getElementById('kpi-pending').innerText = '$' + pending.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            document.getElementById('kpi-holdings').innerText = '$' + totalHoldings.toLocaleString(undefined, { maximumFractionDigits: 0 });
+            document.getElementById('kpi-staked').innerText = '$' + totalStaked.toLocaleString(undefined, { maximumFractionDigits: 0 });
+            document.getElementById('kpi-avg').innerText = '$' + avgHoldings.toLocaleString(undefined, { maximumFractionDigits: 0 });
+            document.getElementById('kpi-validators').innerText = validators;
 
-            // 2. Charts - Geo
-            const countries = {};
+            // 2. MAP (Leaflet)
+            const map = L.map('mapChart').setView([1.0, 20.0], 3); // Center on Africa
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+                attribution: '&copy; OpenStreetMap &copy; CARTO',
+                subdomains: 'abcd',
+                maxZoom: 19
+            }).addTo(map);
+
+            // Mock coordinates for major cities/regions in our list
+            const coords = {
+                "Lagos": [6.5244, 3.3792], "Abuja": [9.0765, 7.3986], "Port Harcourt": [4.8156, 7.0498], "Kano": [12.0022, 8.5920],
+                "Nairobi": [-1.2921, 36.8219], "Mombasa": [-4.0435, 39.6682], "Kisumu": [-0.0917, 34.7680],
+                "Cape Town": [-33.9249, 18.4241], "Johannesburg": [-26.2041, 28.0473], "Durban": [-29.8587, 31.0218],
+                "Accra": [5.6037, -0.1870], "Kumasi": [6.6885, -1.6244],
+                "Addis Ababa": [9.0331, 38.7444], "Kigali": [-1.9441, 30.0619],
+                "Kampala": [0.3476, 32.5825], "Dar es Salaam": [-6.7924, 39.2083]
+            };
+
+            // Aggregate Holdings by Region
+            const regionHoldings = {};
             data.profiles.forEach(p => {
-                countries[p.country] = (countries[p.country] || 0) + 1;
+                if (!regionHoldings[p.region]) regionHoldings[p.region] = 0;
+                regionHoldings[p.region] += p.holdings;
             });
 
-            const ctxGeo = document.getElementById('geoChart').getContext('2d');
-            new Chart(ctxGeo, {
+            // Plot Circles
+            Object.keys(regionHoldings).forEach(region => {
+                if (coords[region]) {
+                    const radius = Math.sqrt(regionHoldings[region]) * 1000; // Scaling factor
+                    L.circle(coords[region], {
+                        color: '#00BFFF',
+                        fillColor: '#00BFFF',
+                        fillOpacity: 0.5,
+                        radius: Math.min(radius, 300000) // Cap radius
+                    }).addTo(map).bindPopup(`<b>${region}</b><br>Capital: $${regionHoldings[region].toLocaleString()}`);
+                }
+            });
+
+            // 3. Participation Chart
+            const ctxPart = document.getElementById('participationChart').getContext('2d');
+            const totalUsers = data.profiles.length;
+            const stakers = data.profiles.filter(p => p.staked > 0).length;
+            const passive = totalUsers - stakers - validators; // roughly
+
+            new Chart(ctxPart, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Passive Holders', 'Stakers', 'Node Validators'],
+                    datasets: [{
+                        data: [passive, stakers, validators],
+                        backgroundColor: ['#4C566A', '#00BFFF', '#FFD700'],
+                        borderWidth: 0
+                    }]
+                },
+                options: { plugins: { legend: { position: 'right', labels: { color: '#ECEFF4' } } } }
+            });
+
+            // 4. Demographics (Bubble: Age vs Holdings)
+            // Simplifying to Bar for clarity: Avg Holdings per Age Bracket
+            const ageGroups = {};
+            const ageCounts = {};
+            data.profiles.forEach(p => {
+                ageGroups[p.age] = (ageGroups[p.age] || 0) + p.holdings;
+                ageCounts[p.age] = (ageCounts[p.age] || 0) + 1;
+            });
+            const avgAgeHoldings = Object.keys(ageGroups).map(age => ageGroups[age] / ageCounts[age]);
+
+            new Chart(document.getElementById('demographicChart').getContext('2d'), {
                 type: 'bar',
                 data: {
-                    labels: Object.keys(countries),
+                    labels: Object.keys(ageGroups),
                     datasets: [{
-                        label: 'Active Nodes',
-                        data: Object.values(countries),
-                        backgroundColor: '#00BFFF',
+                        label: 'Avg Capital (USD)',
+                        data: avgAgeHoldings,
+                        backgroundColor: 'rgba(0, 191, 255, 0.6)',
+                        borderColor: '#00BFFF',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: { y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.05)' } } },
+                    plugins: { legend: { display: false } }
+                }
+            });
+
+            // 5. Maturity Curve (Line: Year vs Holdings)
+            const yearGroups = {};
+            const yearCounts = {};
+            data.profiles.forEach(p => {
+                yearGroups[p.exp_year] = (yearGroups[p.exp_year] || 0) + p.holdings;
+                yearCounts[p.exp_year] = (yearCounts[p.exp_year] || 0) + 1;
+            });
+            const years = Object.keys(yearGroups).sort();
+            const avgYearHoldings = years.map(y => yearGroups[y] / yearCounts[y]);
+
+            new Chart(document.getElementById('maturityChart').getContext('2d'), {
+                type: 'line',
+                data: {
+                    labels: years,
+                    datasets: [{
+                        label: 'Avg Capital (USD)',
+                        data: avgYearHoldings,
+                        borderColor: '#FFD700',
+                        backgroundColor: 'rgba(255, 215, 0, 0.1)',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    scales: { y: { grid: { color: 'rgba(255,255,255,0.05)' } } },
+                    plugins: { legend: { display: false } }
+                }
+            });
+
+            // 6. Regional Bar Chart (Top 10)
+            const topRegions = Object.entries(regionHoldings)
+                .sort(([, a], [, b]) => b - a)
+                .slice(0, 15);
+
+            new Chart(document.getElementById('regionChart').getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: topRegions.map(r => r[0]),
+                    datasets: [{
+                        label: 'Total Capital (USD)',
+                        data: topRegions.map(r => r[1]),
+                        backgroundColor: '#A3BE8C',
                         borderRadius: 4
                     }]
                 },
                 options: {
-                    responsive: true,
-                    plugins: { legend: { display: false } },
                     scales: {
-                        y: { grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: '#9FA8DA' } },
-                        x: { grid: { display: false }, ticks: { color: '#9FA8DA' } }
-                    }
+                        x: { ticks: { color: '#9FA8DA' }, grid: { display: false } },
+                        y: { grid: { color: 'rgba(255,255,255,0.05)' } }
+                    },
+                    plugins: { legend: { display: false } }
                 }
-            });
-
-            // 3. Charts - Tiers
-            const tiers = { 1: 0, 2: 0, 3: 0, 4: 0 };
-            data.nodes.forEach(n => tiers[n.tier]++);
-
-            const ctxTier = document.getElementById('tierChart').getContext('2d');
-            new Chart(ctxTier, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Tier 1 (Basic)', 'Tier 2 (Verified)', 'Tier 3 (Interview)', 'Tier 4 (Priority)'],
-                    datasets: [{
-                        data: Object.values(tiers),
-                        backgroundColor: ['#4C566A', '#D8DEE9', '#00BFFF', '#FFD700'],
-                        borderWidth: 0
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: { legend: { position: 'bottom', labels: { color: '#ECEFF4' } } }
-                }
-            });
-
-            // 4. Ledger Table (Last 10)
-            const tbody = document.querySelector('#ledger-table tbody');
-            // Mocking simpler Tx IDs for display
-            const recent = data.ledger.slice(0, 10);
-            recent.forEach((tx, i) => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td style="font-family: 'JetBrains Mono'">TX-${1000 + i}</td>
-                    <td>${tx.source}</td>
-                    <td>$${tx.amount.toFixed(2)}</td>
-                    <td><span class="status-badge ${tx.status.toLowerCase()}">${tx.status}</span></td>
-                `;
-                tbody.appendChild(tr);
             });
         }
 
